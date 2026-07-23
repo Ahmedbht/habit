@@ -36,7 +36,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // We'll wire this to Add Habit screen next
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AddHabitScreen()),
+          );
         },
         child: const Icon(Icons.add),
       ),
