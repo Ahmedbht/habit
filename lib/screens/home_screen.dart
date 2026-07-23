@@ -27,11 +27,36 @@ class _HomeScreenState extends State<HomeScreen> {
       body: habitProvider.habits.isEmpty
           ? const Center(child: Text("No habits yet. Add one!"))
           : ListView.builder(
+              padding: const EdgeInsets.all(12),
               itemCount: habitProvider.habits.length,
               itemBuilder: (context, index) {
                 final habit = habitProvider.habits[index];
-                return ListTile(
-                  title: Text(habit.name),
+                final color = Color(habit.colorValue);
+
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: color.withOpacity(0.2),
+                      child: Icon(getHabitIcon(habit.iconName), color: color),
+                    ),
+                    title: Text(habit.name),
+                    subtitle: habit.currentStreak > 0
+                        ? Text("🔥 ${habit.currentStreak} day streak")
+                        : const Text("No streak yet"),
+                    trailing: IconButton(
+                      icon: Icon(
+                        habit.isCompletedToday
+                            ? Icons.check_circle
+                            : Icons.circle_outlined,
+                        color: habit.isCompletedToday ? color : Colors.grey,
+                        size: 32,
+                      ),
+                      onPressed: () {
+                        habitProvider.toggleHabitCompletion(habit.id);
+                      },
+                    ),
+                  ),
                 );
               },
             ),
