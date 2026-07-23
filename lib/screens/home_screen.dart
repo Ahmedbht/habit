@@ -3,19 +3,43 @@ import 'package:provider/provider.dart';
 import '../providers/habit_provider.dart';
 import 'add_habit_screen.dart';
 import '../models/habit_model.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
+
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Load saved habits when screen first opens
     Future.microtask(() =>
         Provider.of<HabitProvider>(context, listen: false).loadData());
+  }
+  void _showAchievementPopup(Achievement achievement) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("🎉 Achievement Unlocked!"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(achievement.title,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text(achievement.description),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Nice!"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -52,42 +76,48 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
             child: habitProvider.habits.isEmpty
-      body: habitProvider.habits.isEmpty
-          ? const Center(child: Text("No habits yet. Add one!"))
-          : ListView.builder(
-              padding: const EdgeInsets.all(12),
-              itemCount: habitProvider.habits.length,
-              itemBuilder: (context, index) {
-                final habit = habitProvider.habits[index];
-                final color = Color(habit.colorValue);
+                ? const Center(child: Text("No habits yet. Add one!"))
+                : ListView.builder(
+                    padding: const EdgeInsets.all(12),
+                    itemCount: habitProvider.habits.length,
+                    itemBuilder: (context, index) {
+                      final habit = habitProvider.habits[index];
+                      final color = Color(habit.colorValue);
 
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: color.withOpacity(0.2),
-                      child: Icon(getHabitIcon(habit.iconName), color: color),
-                    ),
-                    title: Text(habit.name),
-                    subtitle: habit.currentStreak > 0
-                        ? Text("🔥 ${habit.currentStreak} day streak")
-                        : const Text("No streak yet"),
-                    trailing: IconButton(
-                      icon: Icon(
-                        habit.isCompletedToday
-                            ? Icons.check_circle
-                            : Icons.circle_outlined,
-                        color: habit.isCompletedToday ? color : Colors.grey,
-                        size: 32,
-                      ),
-                      onPressed: () {
-                        habitProvider.toggleHabitCompletion(habit.id);
-                      },
-                    ),
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: color.withOpacity(0.2),
+                            child: Icon(getHabitIcon(habit.iconName), color: color),
+                          ),
+                          title: Text(habit.name),
+                          subtitle: habit.currentStreak > 0
+                              ? Text("🔥 ${habit.currentStreak} day streak")
+                              : const Text("No streak yet"),
+                          trailing: IconButton(
+                            icon: Icon(
+                              habit.isCompletedToday
+                                  ? Icons.check_circle
+                                  : Icons.circle_outlined,
+                              color: habit.isCompletedToday ? color : Colors.grey,
+                              size: 32,
+                            ),
+                            onPressed: () async {
+                              await habitProvider.toggleHabitCompletion(habit.id);
+                              if (habitProvider.newlyUnlocked.isNotEmpty) {
+                                _showAchievementPopup(habitProvider.newlyUnlocked.first);
+                                habitProvider.clearNewlyUnlocked();
+                              }
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
