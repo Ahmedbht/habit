@@ -24,6 +24,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Habit Quest")),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Level ${habitProvider.level}",
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text("${habitProvider.xpIntoCurrentLevel} / ${habitProvider.xpNeededForNextLevel} XP"),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: LinearProgressIndicator(
+                    value: habitProvider.xpIntoCurrentLevel / habitProvider.xpNeededForNextLevel,
+                    minHeight: 10,
+                    backgroundColor: Colors.grey[300],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: habitProvider.habits.isEmpty
       body: habitProvider.habits.isEmpty
           ? const Center(child: Text("No habits yet. Add one!"))
           : ListView.builder(
