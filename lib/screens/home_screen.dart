@@ -52,6 +52,15 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text("Habit Quest"),
         actions: [
           IconButton(
+            icon: const Icon(Icons.calendar_month),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CalendarScreen()),
+              );
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.bar_chart),
             onPressed: () {
               Navigator.push(
