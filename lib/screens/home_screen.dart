@@ -4,6 +4,7 @@ import '../providers/habit_provider.dart';
 import 'add_habit_screen.dart';
 import '../models/habit_model.dart';
 import '../models/achievement_model.dart';
+import 'stats_screen.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
