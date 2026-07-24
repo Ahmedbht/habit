@@ -47,7 +47,20 @@ class _HomeScreenState extends State<HomeScreen> {
     final habitProvider = Provider.of<HabitProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Habit Quest")),
+      appBar: AppBar(
+        title: const Text("Habit Quest"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.bar_chart),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const StatsScreen()),
+              );
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Padding(
